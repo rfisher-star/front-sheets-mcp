@@ -3,7 +3,7 @@ const { Server } = require('@modelcontextprotocol/sdk/server/index.js');
 const { SSEServerTransport } = require('@modelcontextprotocol/sdk/server/sse.js');
 const { CallToolRequestSchema, ListToolsRequestSchema } = require('@modelcontextprotocol/sdk/types.js');
 
-const GOOGLE_APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx-Y2IA2NSujH5CBqnh2dzbDSO54gFE02jErqIftT1vROQLQ9TFRhbsl-zKdaYOjb9g/exec";
+const GOOGLE_APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx_-Y2IA2NSujH5CBqnh2dzbDSO54gFE02jErqlfT1vROQLQ9TFRHbsl-zKdaYOjb9g/exec";
 
 const app = express();
 app.use(express.json());
