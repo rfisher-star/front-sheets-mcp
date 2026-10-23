@@ -3,13 +3,19 @@ const app = express();
 
 app.use(express.json());
 
-// PASTE YOUR NEW GOOGLE APPS SCRIPT URL HERE
+// YOUR GOOGLE APPS SCRIPT WEB APP URL
 const GOOGLE_APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx_-Y2IA2NSujH5CBqnh2dzbDSO54gFE02jErqlfT1vROQLQ9TFRHbsl-zKdaYOjb9g/exec";
 
-app.all('/mcp', async (req, res) => {
+// Handle GET requests immediately so Front never times out
+app.get('/mcp', (req, res) => {
+  return res.status(200).json({ status: "ok", message: "MCP server active" });
+});
+
+// Handle MCP JSON-RPC protocol requests
+app.post('/mcp', async (req, res) => {
   const { method, id } = req.body || {};
 
-  // Handle initialization handshake from Front
+  // Handshake initialization
   if (method === 'initialize') {
     return res.json({
       jsonrpc: "2.0",
@@ -22,7 +28,7 @@ app.all('/mcp', async (req, res) => {
     });
   }
 
-  // Expose the tool definition to Front
+  // Provide tool list to Front
   if (method === 'tools/list') {
     return res.json({
       jsonrpc: "2.0",
@@ -39,7 +45,7 @@ app.all('/mcp', async (req, res) => {
     });
   }
 
-  // Fetch data from Google Apps Script when Front requests tool execution
+  // Execute tool call and return Google Sheets data
   if (method === 'tools/call') {
     try {
       const response = await fetch(GOOGLE_APPS_SCRIPT_URL, { redirect: 'follow' });
@@ -65,12 +71,11 @@ app.all('/mcp', async (req, res) => {
     }
   }
 
-  // Fallback for empty checks or notifications
   return res.json({ jsonrpc: "2.0", id: id || 1, result: {} });
 });
 
 app.all('*', (req, res) => {
-  res.status(200).send("MCP Proxy Active");
+  res.status(200).send("MCP Proxy Running");
 });
 
 module.exports = app;
